@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <title></title>
+  </head>
+  <body>
+    <script>
+      class Card{
+        constructor(value, rank, suit){
+          this.value = value;
+          this.rank = rank;
+          this.suit = suit;
+          this.name = `${this.rank} of ${this.suit}`;
+          // set Blackjack-specific value
+        }
+      }
+      class Deck{
+        constructor(){
+          this.ranks = ['Ace', '2', '3', '4', '5', '6', '7', '8', '9', '10',
+          'Jack', 'Queen', 'King'];
+          this.suits = ['Spades', 'Hearts', 'Diamonds', 'Clubs'];
+          this.cards = this.default_deck();
+        }
+        shuffle(){
+          var unshuffled = this.cards.length, deck_back, random_card;
+          while (unshuffled){
+            // Pick a random card from the unshuffled portion (subtract 1)
+            // (first time through, picks number from 0 to 51):
+            random_card = Math.floor(Math.random() * --unshuffled);
+            // Find the back card of the unshuffled portion
+            // (first time: shuffle_deck[51]):
+            deck_back = this.cards[unshuffled];
+            // Switch the places of the randomly picked card and the back card
+            //// Put randomly picked card at the back of the unshuffled portion
+            this.cards[unshuffled] = this.cards[random_card];
+            //// Put the back-card-that-was where the random card came from
+            this.cards[random_card] = deck_back;
+          }
+          return this;
+        }
+        printout(){
+          for (var i = 0; i < this.cards.length; ++i){
+            console.log(this.cards[i].name);
+          }
+          return this;
+        }
+        default_deck(){
+          var cards = [];
+          for (let r = 0; r < this.ranks.length; ++r){
+            for (let s = 0; s < this.suits.length; ++s){
+              cards.push(new Card(r + 1, this.ranks[r], this.suits[s]));
+              // console.log(this.cards);
+              let newcard = cards[cards.length - 1];
+              // console.log(newcard.rank + ' of ' + newcard.suit);
+            }
+          }
+          return cards; 
+        }
+        reset(){
+          this.cards = this.default_deck();
+          return this;
+        }
+        deal(){
+          let index = Math.floor(Math.random() * (this.cards.length - 1));
+          let dealt = this.cards.splice(index, 1)[0];
+          return dealt;
+        }
+      }
+      class Player{
+        constructor(name){
+          this.name = name;
+          this.hand = [];
+        }
+        take(deck){
+          let newcard = deck.deal();
+          this.hand.push(newcard);
+          return this;
+        }
+        discard(index=Math.floor(Math.random() * this.hand.length)){
+          var discarded;
+          // discarded card is either random or given by index
+          discarded = this.hand.splice(index, 1)[0];
+          return discarded;
+        }
+      }
+    </script>
+  </body>
+</html>
